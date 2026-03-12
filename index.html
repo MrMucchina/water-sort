@@ -2,15 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#f5f5f7">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Aqua">
-<meta name="description" content="Ordina i colori nelle bottiglie — puzzle rilassante in stile minimal">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aqua — Water Sort</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
@@ -202,12 +194,13 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
   animation: bottleIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+  position: relative;
 }
 
 @keyframes bottleIn {
@@ -217,87 +210,80 @@ header {
 
 .bottle-wrapper.lifted { transform: translateY(-18px); }
 
-/* neck */
-.b-neck {
-  width: 22px; height: 14px;
-  margin: 0 auto;
-  background: rgba(255,255,255,0.6);
-  border: 1.5px solid var(--border-strong);
-  border-bottom: none;
-  border-radius: 5px 5px 0 0;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  position: relative; z-index: 2;
-  transition: border-color 0.2s, background 0.2s;
+/* complete badge — checkmark above bottle */
+.b-badge {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #34c759;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transform: scale(0) translateY(4px);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(52,199,89,0.4);
+}
+.b-badge svg { display: block; }
+.bottle-wrapper.complete .b-badge {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+/* placeholder space when not complete so bottles don't jump */
+.b-badge-slot {
+  height: 22px;
+  display: flex; align-items: center; justify-content: center;
 }
 
-/* body */
+/* body — open top (no top border, no top radius) */
 .b-body {
   width: 54px;
   height: 178px;
-  border: 1.5px solid var(--border-strong);
-  border-radius: 10px 10px 24px 24px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  background: rgba(255,255,255,0.5);
+  border: 2px solid var(--border-strong);
+  border-top: none;
+  border-radius: 0 0 26px 26px;
+  background: rgba(255,255,255,0.38);
   overflow: hidden;
   position: relative;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.5),
-    var(--shadow-sm);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45), var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 /* glass shine */
 .b-body::after {
   content: '';
   position: absolute;
-  top: 10px; left: 8px;
-  width: 5px; height: 55%;
-  background: rgba(255,255,255,0.55);
+  top: 6px; left: 7px;
+  width: 5px; height: 52%;
+  background: rgba(255,255,255,0.52);
   border-radius: 3px;
   pointer-events: none;
   z-index: 20;
 }
 
-/* top glare */
-.b-body::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
-  z-index: 15;
-  pointer-events: none;
-}
-
 /* selected */
 .bottle-wrapper.selected .b-body {
   border-color: var(--accent);
+  background: rgba(0,113,227,0.04);
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.5),
-    0 0 0 3.5px rgba(0,113,227,0.2),
+    inset 0 0 0 1px rgba(255,255,255,0.45),
+    0 0 0 3px rgba(0,113,227,0.18),
     var(--shadow-md);
-}
-.bottle-wrapper.selected .b-neck {
-  border-color: var(--accent);
-  background: rgba(0,113,227,0.07);
 }
 
 /* hint */
 .bottle-wrapper.hint .b-body {
-  border-color: rgba(52,199,89,0.55);
+  border-color: rgba(52,199,89,0.6);
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.5),
-    0 0 0 3px rgba(52,199,89,0.18);
+    inset 0 0 0 1px rgba(255,255,255,0.45),
+    0 0 0 2.5px rgba(52,199,89,0.2);
 }
 
 /* complete */
 .bottle-wrapper.complete .b-body {
+  border-color: rgba(52,199,89,0.5);
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.5),
-    0 0 0 2.5px rgba(52,199,89,0.3),
-    0 8px 28px rgba(52,199,89,0.18);
+    inset 0 0 0 1px rgba(255,255,255,0.45),
+    0 0 0 2px rgba(52,199,89,0.25),
+    0 6px 20px rgba(52,199,89,0.15);
 }
 
 /* segments */
@@ -315,17 +301,18 @@ header {
   transition: height 0.35s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* divider line between segments */
-.seg::after {
+/* divider only between DIFFERENT colors — added via JS class */
+.seg.divider::after {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 1.5px;
-  background: rgba(255,255,255,0.28);
+  height: 2px;
+  background: rgba(255,255,255,0.55);
   pointer-events: none;
+  z-index: 2;
 }
-.seg:first-child { border-radius: 0 0 22px 22px; }
-.seg:first-child::after { display: none; }
+
+.seg:first-child { border-radius: 0 0 24px 24px; }
 
 @keyframes segIn {
   from { transform: scaleY(0); transform-origin: bottom; }
@@ -628,20 +615,20 @@ header {
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── COLORS ────────────────────────────────────────────────
+// ─── COLORS — high contrast, visually distinct ─────────────
 const COLORS = [
-  { id:'r', hex:'#ff3b30', name:'Rosso'   },
-  { id:'o', hex:'#ff9500', name:'Arancio' },
-  { id:'y', hex:'#ffcc00', name:'Giallo'  },
-  { id:'g', hex:'#34c759', name:'Verde'   },
-  { id:'c', hex:'#5ac8fa', name:'Azzurro' },
-  { id:'b', hex:'#007aff', name:'Blu'     },
-  { id:'p', hex:'#af52de', name:'Viola'   },
-  { id:'m', hex:'#ff2d55', name:'Rosa'    },
-  { id:'t', hex:'#30d158', name:'Menta'   },
-  { id:'i', hex:'#64d2ff', name:'Cielo'   },
-  { id:'e', hex:'#ff6961', name:'Corallo' },
-  { id:'l', hex:'#98989d', name:'Grigio'  },
+  { id:'r', hex:'#E8173A', name:'Rosso'    },
+  { id:'o', hex:'#FF7A00', name:'Arancio'  },
+  { id:'y', hex:'#F5C800', name:'Giallo'   },
+  { id:'g', hex:'#1DB954', name:'Verde'    },
+  { id:'c', hex:'#00BFFF', name:'Celeste'  },
+  { id:'b', hex:'#1A5FFF', name:'Blu'      },
+  { id:'p', hex:'#8B2BE2', name:'Viola'    },
+  { id:'m', hex:'#FF1493', name:'Fucsia'   },
+  { id:'t', hex:'#00C9A7', name:'Teal'     },
+  { id:'e', hex:'#FF5C5C', name:'Corallo'  },
+  { id:'l', hex:'#A259FF', name:'Lavanda'  },
+  { id:'n', hex:'#2ECC71', name:'Smeraldo' },
 ];
 
 // ─── CONFIG ────────────────────────────────────────────────
@@ -748,9 +735,15 @@ function render() {
     wrap.dataset.idx = idx;
     wrap.style.animationDelay = (idx * 0.045) + 's';
 
-    const neck = document.createElement('div');
-    neck.className = 'b-neck';
+    // Badge slot (checkmark when complete)
+    const badgeSlot = document.createElement('div');
+    badgeSlot.className = 'b-badge-slot';
+    const badge = document.createElement('div');
+    badge.className = 'b-badge';
+    badge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    badgeSlot.appendChild(badge);
 
+    // Body (open top)
     const body = document.createElement('div');
     body.className = 'b-body';
 
@@ -762,16 +755,18 @@ function render() {
       seg.className = 'seg';
       seg.style.height = segH + 'px';
       seg.style.background = color ? color.hex : '#ccc';
+      // divider only when color changes (segment above is different)
+      if (si > 0 && b[si] !== b[si - 1]) seg.classList.add('divider');
       segs.appendChild(seg);
     });
 
     body.appendChild(segs);
-    wrap.appendChild(neck);
+    wrap.appendChild(badgeSlot);
     wrap.appendChild(body);
 
     if (cfg.showNums) {
       const lbl = document.createElement('div');
-      lbl.style.cssText = 'font-size:0.64rem;color:var(--text-tertiary);font-weight:500;letter-spacing:0.06em;';
+      lbl.style.cssText = 'font-size:0.64rem;color:var(--text-tertiary);font-weight:500;letter-spacing:0.06em;margin-top:4px;';
       lbl.textContent = idx + 1;
       wrap.appendChild(lbl);
     }
@@ -800,11 +795,15 @@ function patchSegments(idx) {
   b.forEach((cid, si) => {
     const color = COLORS.find(c => c.id === cid);
     const hex = color ? color.hex : '#ccc';
+    const hasDivider = si > 0 && b[si] !== b[si - 1];
     if (si < segs.children.length) {
-      segs.children[si].style.background = hex;
+      const el = segs.children[si];
+      el.style.background = hex;
+      el.classList.toggle('divider', hasDivider);
     } else {
       const seg = document.createElement('div');
       seg.className = 'seg';
+      if (hasDivider) seg.classList.add('divider');
       seg.style.height = segH + 'px';
       seg.style.background = hex;
       if (cfg.anim) seg.style.animation = 'segIn 0.28s cubic-bezier(0.4,0,0.2,1) both';
@@ -989,13 +988,6 @@ function shuffle(a) {
     [a[i],a[j]]=[a[j],a[i]];
   }
   return a;
-}
-
-// ─── SERVICE WORKER ────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
 }
 </script>
 </body>
